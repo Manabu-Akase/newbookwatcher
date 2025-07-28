@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">newbookwatcher</string>
+    <string name="SearchTitle">検索したい本のタイトルを入力してください📕</string>
+    <string name="SearchBox">🔍タイトルを入力</string>
+    <string name="Search">検索</string>
+    <string name="favoriteList">⭐お気に入り一覧</string>
+    <string name="notification">🔔通知設定</string>
+    <string name="returnbtn"><![CDATA[<戻る]]></string>
+    <string name="seachedBookTitle">検索した本のタイトル</string>
+    <string name="bookcover">BookCover</string>
+    <string name="bookTitle">タイトル</string>
+    <string name="favoriteButton">お気に入りボタン</string>
+    <string name="release_date">2025-07-24</string>
+    <string name="authorName">著者名</string>>
+</resources>
