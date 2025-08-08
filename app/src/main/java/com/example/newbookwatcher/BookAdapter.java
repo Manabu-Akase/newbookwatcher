@@ -1,5 +1,5 @@
 package com.example.newbookwatcher;
-
+import android.util.Log;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,19 +7,19 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 import java.util.Map;
 
+//Adapterクラスを作成
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
     private List <Book> bookList;
     private Context context ;
     private Map<Integer,String>authorMap;
 
+    //BookAdapterを作る時に使うコンストラクタ
     public BookAdapter(List<Book> bookList,Context context,Map<Integer,String>authorMap){
         this.bookList = bookList ;
         this.context = context ;
@@ -40,6 +40,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder , int position){
+
         Book book = bookList.get(position);
         holder.textViewBookTitle.setText(book.title);
         holder.tvDate.setText(book.release_date.toString());
@@ -56,11 +57,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         TextView textViewBookTitle,tvDate,tvAuthor;
         ImageButton favoriteButton;
         public  BookViewHolder(@NonNull View itemView){
+
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
-            textViewBookTitle = itemView.findViewById(R.id.textViewBookTitle);
-            tvDate = itemView.findViewById(R.id.tvDate);
+            textViewBookTitle = itemView.findViewById(R.id.tvBookTitle);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
+            tvDate = itemView.findViewById(R.id.tvDate);
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
 
         }

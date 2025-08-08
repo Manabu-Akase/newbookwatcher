@@ -2,9 +2,8 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:contentDescription="戻る">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,14 +19,15 @@
 
             <ImageView
                 android:id="@+id/BackButton"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_media_previous" />
+                app:srcCompat="@android:drawable/ic_media_previous"
+                android:contentDescription="@string/back"/>
 
             <EditText
                 android:id="@+id/editTextSearch"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="@string/SearchBox" />
 
@@ -37,9 +37,69 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Search"
                  />
+
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/bookcover"
+            app:srcCompat="@drawable/ic_launcher_background" />
 
+        <TextView
+            android:id="@+id/BookTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="@string/bookTitle"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/Author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Author"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/ReleaseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/release_date"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/Publisher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Publisher"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/favoriteButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:srcCompat="@android:drawable/star_off"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/favoriteButton"/>
+
+        <Button
+            android:id="@+id/favoriteListButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24sp"
+            android:text="@string/favoriteList" />
+
+        <Button
+            android:id="@+id/notificationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/notification"
+            />
 
     </LinearLayout>
 </ScrollView>

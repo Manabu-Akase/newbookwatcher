@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(platform("androidx.compose:compose-bom:2025.07.00"))
 
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)

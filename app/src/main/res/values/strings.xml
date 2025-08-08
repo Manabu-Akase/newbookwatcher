@@ -9,7 +9,25 @@
     <string name="seachedBookTitle">検索した本のタイトル</string>
     <string name="bookcover">BookCover</string>
     <string name="bookTitle">タイトル</string>
-    <string name="favoriteButton">お気に入りボタン</string>
+    <string name="favoriteButton">お気に入り追加/削除ボタン</string>
     <string name="release_date">2025-07-24</string>
-    <string name="authorName">著者名</string>>
+    <string name="authorName">著者名</string>
+    <string name="Author">著者</string>
+    <string name="Publisher">出版社</string>
+    <string name="back">戻る</string>
+    <string name="NotificationInfomation">通知日数を選択してください</string>
+    <string name="cancel">キャンセル</string>
+    <string name="save">保存</string>
+    <string name="NotificationSet">通知ON/OFF</string>
+    <string-array name="NotificationDays_list">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+    <string name="preference_key">com.example.newbookwatcher</string>
+    <string name="PREF_NAME">notification_prefs</string>
 </resources>
