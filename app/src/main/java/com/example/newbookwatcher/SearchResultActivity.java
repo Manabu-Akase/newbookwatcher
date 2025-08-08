@@ -24,6 +24,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private Map<Integer,String> authorMap = new HashMap<>();
     private AppDatabase db;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class SearchResultActivity extends AppCompatActivity {
         //リサイクラービューの処理
         RecyclerView recyclerView = findViewById (R.id.recyclerViewResults);
 
-        bookAdapter = new BookAdapter(new ArrayList<>(),this ,authorMap);
+        bookAdapter = new BookAdapter(new ArrayList<>(),this ,authorMap,db);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bookAdapter);
 

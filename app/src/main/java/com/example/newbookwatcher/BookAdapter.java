@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +20,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     private List <Book> bookList;
     private Context context ;
     private Map<Integer,String>authorMap;
+    private AppDatabase db ;
+
 
     //BookAdapterを作る時に使うコンストラクタ
-    public BookAdapter(List<Book> bookList,Context context,Map<Integer,String>authorMap){
+    public BookAdapter(List<Book> bookList,Context context,Map<Integer,String>authorMap,AppDatabase db){
         this.bookList = bookList ;
         this.context = context ;
         this.authorMap = authorMap ;
+        this.db = db ;
     }
     public void updateData(List<Book>newBookList) {
         bookList.clear();
@@ -47,6 +52,38 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         String authorName = authorMap.get(book.authorId);
         holder.tvAuthor.setText(authorName != null ? authorName:"不明な著者");
+
+        //アイコン表示の切り替え処理（初期アイコン→変化させる）
+        holder.favoriteButton.setImageResource(
+                book.isFavorite ? android.R.drawable.star_on: android.R.drawable.star_off
+        );
+
+        //アイコンタップ時の処理
+        holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean newStatus = !book.isFavorite;
+                book.isFavorite = newStatus;
+
+                holder.favoriteButton.setImageResource(
+                        book.isFavorite ? android.R.drawable.star_on: android.R.drawable.star_off
+                );
+            }
+        });
+
+        //データベースへ保存する処理　
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //データベースを設定→保存
+                AppDatabase db = Room.databaseBuilder(
+                        context.getApplicationContext(), AppDatabase.class, "book-database"
+                ).build();
+
+                db.bookDao().updateFavorite(book.bookId, book.isFavorite);
+            }
+        }).start();
+
     }
     @Override
     public int getItemCount(){
