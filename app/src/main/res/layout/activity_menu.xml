@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    tools:context=".MainActivity">
+    tools:context=".SearchResultActivity">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -26,12 +26,13 @@
         android:id="@+id/editTextSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/SearchBox"
+        android:layout_marginTop="16dp"
         android:height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
-        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/SearchBox"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
     <Button
         android:id="@+id/SearchButton"
