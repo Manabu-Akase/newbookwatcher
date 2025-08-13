@@ -16,8 +16,10 @@ public class Book {
     @ColumnInfo(name = "title")
     public String title ;
 
+    /*中間テーブルで管理するため削除
     @ColumnInfo(name = "authorId")
     public int authorId ;
+     */
 
     @ColumnInfo(name = "publisherId")
     public int publisherId ;
