@@ -18,12 +18,12 @@ import java.util.Map;
 //Adapterクラスを作成
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHolder> {
 
-    private List<Book> FavoriteBookList;
+    private List<BookWithAuthors> FavoriteBookList;
     private Context context;
     private Map<Integer,String>authorMap;
     private AppDatabase db;
 
-public FavoriteAdapter(List<Book> FavoriteBookList,Context context,Map<Integer,String> authorMap){
+public FavoriteAdapter(List<BookWithAuthors> FavoriteBookList,Context context,Map<Integer,String> authorMap){
     this.FavoriteBookList = FavoriteBookList;
     this.context = context ;
     this.authorMap = authorMap ;
@@ -57,10 +57,18 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
     }
     @Override
     public void onBindViewHolder(@NonNull FavoriteAdapter.ViewHolder holder , int position){
-        Book book = FavoriteBookList.get(position);
+        BookWithAuthors bookWithAuthors = FavoriteBookList.get(position);
+        Book book = bookWithAuthors.book;
+
+        //書籍情報の表示
         holder.tvBookTitle.setText(book.title);
         holder.tvDate.setText(book.release_date.toString());
-        holder.tvAuthor.setText(authorMap.get(book.authorId));
+
+        //複数著者をカンマ繋げで表示する処理
+
+
+
+        //お気に入りアイコンの初期状態
         holder.favoriteButton.setImageResource(android.R.drawable.star_on);
 
         //アイコンが押されたらお気に入り解除、リストからも削除する処理
@@ -69,7 +77,6 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 if(book.isFavorite){
-
                     //お気に入りリストからなくなることをダイアログで忠告
                     AlertDialog.Builder builder = new AlertDialog.Builder(context)
                             .setCancelable(false)
@@ -115,7 +122,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
         return FavoriteBookList.size();
     }
 
-    public void updateData(List<Book> newFavoriteBookList){
+    public void updateData(List<BookWithAuthors> newFavoriteBookList){
         FavoriteBookList = newFavoriteBookList ;
         notifyDataSetChanged();
 
