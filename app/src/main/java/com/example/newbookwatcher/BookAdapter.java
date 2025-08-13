@@ -17,20 +17,20 @@ import java.util.Map;
 //Adapterクラスを作成
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
-    private List <Book> bookList;
+    private List <BookWithAuthors> bookList;
     private Context context ;
     private Map<Integer,String>authorMap;
     private AppDatabase db ;
 
 
     //BookAdapterを作る時に使うコンストラクタ
-    public BookAdapter(List<Book> bookList,Context context,Map<Integer,String>authorMap,AppDatabase db){
+    public BookAdapter(List<BookWithAuthors> bookList,Context context,Map<Integer,String>authorMap,AppDatabase db){
         this.bookList = bookList ;
         this.context = context ;
         this.authorMap = authorMap ;
         this.db = db ;
     }
-    public void updateData(List<Book>newBookList) {
+    public void updateData(List<BookWithAuthors>newBookList) {
         bookList.clear();
         bookList.addAll(newBookList);
         notifyDataSetChanged();
@@ -45,13 +45,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder , int position){
-
-        Book book = bookList.get(position);
+        BookWithAuthors bookWithAuthors = bookList.get(position);
+        Book book = bookWithAuthors.book;
         holder.textViewBookTitle.setText(book.title);
         holder.tvDate.setText(book.release_date.toString());
 
-        String authorName = authorMap.get(book.authorId);
-        holder.tvAuthor.setText(authorName != null ? authorName:"不明な著者");
+        //複数の著者をカンマで繋げて表示
+
 
         //アイコン表示の切り替え処理（初期アイコン→変化させる）
         holder.favoriteButton.setImageResource(
