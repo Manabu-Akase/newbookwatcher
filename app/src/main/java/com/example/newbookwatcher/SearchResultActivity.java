@@ -72,7 +72,7 @@ public class SearchResultActivity extends AppCompatActivity {
             public void run() {
                 List<Author> authors = db.authorDao().getAllAuthors();
                 for (Author author: authors){
-                    authorMap.put(author.authorId,author.name+"("+ author.authorKana+")");
+                    authorMap.put(author.authorId,author.authorName+"("+ author.authorKana+")");
                 }
 
                 //画面を止めないため、UI更新をメインスレッドで

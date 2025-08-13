@@ -1,5 +1,5 @@
 package com.example.newbookwatcher;
-
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,6 +9,8 @@ import java.util.Date;
 public class Book {
 
     @PrimaryKey(autoGenerate = true)
+    @NonNull
+    @ColumnInfo(name ="bookId")
     public int bookId ;
 
     @ColumnInfo(name = "title")
@@ -25,6 +27,10 @@ public class Book {
 
     @ColumnInfo(name = "image_url")
     public String image_url ;
+
+    @ColumnInfo(name="price")
+    public int price;
+
 
     @ColumnInfo(name = "added_date")
     public  Date added_date ;

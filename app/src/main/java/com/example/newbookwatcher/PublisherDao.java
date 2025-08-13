@@ -14,7 +14,7 @@ public interface PublisherDao {
     @Query("SELECT * FROM publishers")
     List<Publisher> getAllPublisher();
 
-    @Query("SELECT name FROM publishers WHERE publisherId = :id")
+    @Query("SELECT publisherName FROM publishers WHERE publisherId = :id")
     String getPublisherNameById(int id);
 
 }

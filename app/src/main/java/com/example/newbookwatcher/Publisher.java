@@ -13,7 +13,7 @@ public class Publisher {
     @NonNull
     public int publisherId ;
 
-    @ColumnInfo(name = "name")
-    public String name ;
+    @ColumnInfo(name = "publisherName")
+    public String publisherName ;
 
 }

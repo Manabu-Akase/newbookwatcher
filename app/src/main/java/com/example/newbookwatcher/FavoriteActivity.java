@@ -73,7 +73,7 @@ public class FavoriteActivity extends AppCompatActivity {
                 //著者情報をデータベースから全部取り出す　→　マップ著者idと名前（＋カナ）を入れる
                 List<Author> authors = db.authorDao().getAllAuthors();
                 for (Author author : authors){
-                    authorMap.put(author.authorId, author.name+"("+author.authorKana+")");
+                    authorMap.put(author.authorId, author.authorName+"("+author.authorKana+")");
                 }
 
                 //お気に入りされた本をデータベースから取り出す

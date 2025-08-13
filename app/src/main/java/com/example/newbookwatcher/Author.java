@@ -7,13 +7,13 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "authors")
 public class Author {
-
     @PrimaryKey(autoGenerate = true)
     @NonNull
+    @ColumnInfo(name="authorId")
     public int authorId ;
 
-    @ColumnInfo(name = "name")
-    public String name ;
+    @ColumnInfo(name = "authorName")
+    public String authorName ;
 
     @ColumnInfo(name = "author_kana")
     public String authorKana ;
