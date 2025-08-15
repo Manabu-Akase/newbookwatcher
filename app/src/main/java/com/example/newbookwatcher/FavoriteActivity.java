@@ -36,7 +36,7 @@ public class FavoriteActivity extends AppCompatActivity {
     //リサイクラービューの設定→アダプターの作成と処理、縦に並べる
     RecyclerView recyclerView = findViewById(R.id.favoriteBookList);
 
-    favoriteAdapter = new FavoriteAdapter(new ArrayList<Book>(),FavoriteActivity.this ,authorMap);
+    favoriteAdapter = new FavoriteAdapter(new ArrayList<BookWithAuthors>(),FavoriteActivity.this ,authorMap);
         recyclerView.setAdapter(favoriteAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(FavoriteActivity.this));
 
@@ -77,7 +77,7 @@ public class FavoriteActivity extends AppCompatActivity {
                 }
 
                 //お気に入りされた本をデータベースから取り出す
-                List<Book> favorites = db.bookDao().getFavoriteBooks();
+                List<BookWithAuthors> favorites = db.bookDao().getFavoriteBooksWithAuthors();
 
                 runOnUiThread(new Runnable() {
                     @Override
