@@ -15,6 +15,8 @@ import androidx.room.Room;
 import java.util.List;
 import java.util.Map;
 
+import kotlinx.coroutines.flow.LintKt;
+
 //Adapterクラスを作成
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHolder> {
 
@@ -66,7 +68,15 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
 
         //複数著者をカンマ繋げで表示する処理
 
+        StringBuilder sb = new StringBuilder();
+        for (int i =0; i < bookWithAuthors.authors.size(); i++){
+            sb.append(bookWithAuthors.authors.get(i).authorName);
+            if (i<bookWithAuthors.authors.size()-1){
+                sb.append(",");
+            }
+        }
 
+        holder.tvAuthor.setText(sb.toString());
 
         //お気に入りアイコンの初期状態
         holder.favoriteButton.setImageResource(android.R.drawable.star_on);
@@ -121,9 +131,10 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
     public int getItemCount(){
         return FavoriteBookList.size();
     }
-
+    //お気に入り情報を更新する
     public void updateData(List<BookWithAuthors> newFavoriteBookList){
-        FavoriteBookList = newFavoriteBookList ;
+        FavoriteBookList.clear();
+        FavoriteBookList.addAll(newFavoriteBookList) ;
         notifyDataSetChanged();
 
     }
