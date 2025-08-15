@@ -3,6 +3,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 import java.util.List;
 
@@ -29,5 +30,9 @@ public interface BookDao {
 
     @Query("UPDATE Books SET isFavorite = :isFavorite WHERE bookId = :bookId")
     void updateFavorite(int bookId, boolean isFavorite);
+    //お気に入りの本を取得するクエリ
+    @Transaction
+    @Query("SELECT * FROM books WHERE isFavorite = 1 ")
+    List<BookWithAuthors>getFavoriteBooksWithAuthors();
 
 }
