@@ -50,8 +50,17 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         holder.textViewBookTitle.setText(book.title);
         holder.tvDate.setText(book.release_date.toString());
 
-        //複数の著者をカンマで繋げて表示
+        //複数の著者をカンマで繋げて表示する処理
 
+        StringBuilder sb =new StringBuilder();
+        List<Author> authors = bookWithAuthors.authors;
+        for (int i=0; i<authors.size();i++){
+            sb.append(authors.get(i).authorName);
+            if (i<authors.size()-1){
+                sb.append(",");
+            }
+        }
+        holder.tvAuthor.setText(sb.toString());
 
         //アイコン表示の切り替え処理（初期アイコン→変化させる）
         holder.favoriteButton.setImageResource(
