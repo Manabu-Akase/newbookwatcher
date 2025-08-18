@@ -55,7 +55,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         StringBuilder sb =new StringBuilder();
         List<Author> authors = bookWithAuthors.authors;
         for (int i=0; i<authors.size();i++){
+            //著者の名前を表示する
             sb.append(authors.get(i).authorName);
+            //著者のカナを表示する
+            sb.append(authors.get(i).authorKana);
             if (i<authors.size()-1){
                 sb.append(",");
             }
