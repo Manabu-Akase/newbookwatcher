@@ -1,11 +1,16 @@
 package com.example.newbookwatcher;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 //中間テーブルの作成
 //複合主キーとして　bookIdとauthorIdを使う
-@Entity(primaryKeys ={"bookId","authorId"})
+@Entity (primaryKeys ={"bookId","authorId"},
+indices = {
+        @Index(value = "bookId"),
+        @Index(value = "authorId")
+})
 
 public class BookAuthorsCrossRef {
 
