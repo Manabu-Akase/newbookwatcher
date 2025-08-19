@@ -3,7 +3,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {Book.class, Author.class, Publisher.class,BookAuthorsCrossRef.class}, version = 2)
+@Database(entities = {Book.class, Author.class, Publisher.class,BookAuthorsCrossRef.class}, version = 3)
 @TypeConverters({Converters.class})
 
 public abstract class AppDatabase extends RoomDatabase {
