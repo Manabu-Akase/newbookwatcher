@@ -11,6 +11,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Insert;
 import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,16 +91,86 @@ public class SearchResultActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //サンプル用の本を作成
+
+                //サンプル用の本を作成、Idを取得
                 Book testBook = new Book();
                 testBook.title = "サンプル本";
+                long bookIdLong = db.bookDao().insertBook(testBook);
+                int bookId =(int)bookIdLong;
+
+                /*BookWithAuthorsから取り出すため削除
                 testBook.authorId = 1;
+                 */
+                //著者を登録して authorIdを取得
+                Author author = new Author();
+                author.authorName = "佐藤太郎";
+                author.authorKana = "サトウタロウ";
+                long authorLong =db.authorDao().insert(author);
+                int authorId = (int)authorLong;
+
                 testBook.publisherId = 1;
                 testBook.release_date = new Date();
                 testBook.image_url = "https://example.com/sample.jpg";
                 testBook.added_date = new Date();
 
-                db.bookDao().insertBook(testBook);
+                //BookAuthorsCrossRefに登録
+                BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
+                ref.bookId = bookId;
+                ref.authorId = authorId;
+                db.bookDao().insertBookAuthorsCrossRef(ref);
+
+                List<BookWithAuthors>result = db.bookDao().searchBookWithAuthorsByTitle("サンプル");
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bookAdapter.updateData(result);
+                    }
+                });
+
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //サンプル用の本を作成、Idを取得
+                Book testBook = new Book();
+                testBook.title = "サンプル本";
+                long bookIdLong = db.bookDao().insertBook(testBook);
+                int bookId =(int)bookIdLong;
+
+                /*BookWithAuthorsから取り出すため削除
+                testBook.authorId = 1;
+                 */
+                //著者を登録して authorIdを取得
+                Author author = new Author();
+                author.authorName = "山田太郎";
+                author.authorKana = "ヤマダタロウ";
+                long authorLong =db.authorDao().insert(author);
+                int authorId = (int)authorLong;
+
+                testBook.publisherId = 2;
+                testBook.release_date = new Date();
+                testBook.image_url = "https://example.com/sample.jpg";
+                testBook.added_date = new Date();
+
+                //BookAuthorsCrossRefに登録
+                BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
+                ref.bookId = bookId;
+                ref.authorId = authorId;
+                db.bookDao().insertBookAuthorsCrossRef(ref);
+
+                List<BookWithAuthors>result = db.bookDao().searchBookWithAuthorsByTitle("サンプル");
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bookAdapter.updateData(result);
+                    }
+                });
+
             }
         }).start();
 
@@ -127,8 +198,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        List<Book> result = db.bookDao().searchBookByTitle("%"+keyword+"%");
-
+                        List<BookWithAuthors> result = db.bookDao().searchBookWithAuthorsByTitle("%"+keyword +"%");
 
                         runOnUiThread(new Runnable() {
                             @Override
