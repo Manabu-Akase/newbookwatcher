@@ -11,8 +11,7 @@ import java.util.List;
 public interface BookDao {
 
     @Insert
-    void insertBook(Book book);
-
+    long insertBook(Book book);
     @Update
     void update(Book book);
 
