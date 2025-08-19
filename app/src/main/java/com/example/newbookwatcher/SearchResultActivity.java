@@ -135,6 +135,43 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         }).start();
 
+        //テスト用に２冊目の本を登録
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Book>books=db.bookDao().searchBookByTitle("サンプル本2");
+                if (books.isEmpty()) {
+
+                    //サンプル用の本を作成、Idを取得
+                    Book testBook2 = new Book();
+                    testBook2.title = "サンプル本";
+                    long bookIdLong = db.bookDao().insertBook(testBook2);
+                    int bookId =(int)bookIdLong;
+
+                /*BookWithAuthorsから取り出すため削除
+                testBook.authorId = 1;
+                 */
+                    //著者を登録して authorIdを取得
+                    Author author2 = new Author();
+                    author2.authorName = "田中花子";
+                    author2.authorKana = "タナカハナコ";
+                    long authorLong =db.authorDao().insert(author2);
+                    int authorId = (int)authorLong;
+
+                    testBook2.publisherId = 2;
+                    testBook2.release_date = new Date();
+                    testBook2.image_url = "https://example.com/sample.jpg";
+                    testBook2.added_date = new Date();
+
+                    //BookAuthorsCrossRefに登録
+                    BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
+                    ref.bookId = bookId;
+                    ref.authorId = authorId;
+                    db.bookDao().insertBookAuthorsCrossRef(ref);
+                }
+            }
+        }).start();
+
         // メニュー画面から検索された本のタイトルをテキストビューで表示する処理
         TextView SearchResultTitle = findViewById(R.id.tvSearchTitle);
         //キーワードを取得して表示
