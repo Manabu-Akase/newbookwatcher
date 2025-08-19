@@ -91,6 +91,8 @@ public class SearchResultActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                List<Book>books=db.bookDao().searchBookByTitle("サンプル本");
+                if (books.isEmpty()) {
 
                 //サンプル用の本を作成、Idを取得
                 Book testBook = new Book();
@@ -119,6 +121,7 @@ public class SearchResultActivity extends AppCompatActivity {
                 ref.authorId = authorId;
                 db.bookDao().insertBookAuthorsCrossRef(ref);
 
+                /*検索前はリストが空、検索した後に結果表示
                 List<BookWithAuthors>result = db.bookDao().searchBookWithAuthorsByTitle("サンプル");
 
                 runOnUiThread(new Runnable() {
@@ -127,50 +130,8 @@ public class SearchResultActivity extends AppCompatActivity {
                         bookAdapter.updateData(result);
                     }
                 });
-
-            }
-        }).start();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                //サンプル用の本を作成、Idを取得
-                Book testBook = new Book();
-                testBook.title = "サンプル本";
-                long bookIdLong = db.bookDao().insertBook(testBook);
-                int bookId =(int)bookIdLong;
-
-                /*BookWithAuthorsから取り出すため削除
-                testBook.authorId = 1;
                  */
-                //著者を登録して authorIdを取得
-                Author author = new Author();
-                author.authorName = "山田太郎";
-                author.authorKana = "ヤマダタロウ";
-                long authorLong =db.authorDao().insert(author);
-                int authorId = (int)authorLong;
-
-                testBook.publisherId = 2;
-                testBook.release_date = new Date();
-                testBook.image_url = "https://example.com/sample.jpg";
-                testBook.added_date = new Date();
-
-                //BookAuthorsCrossRefに登録
-                BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
-                ref.bookId = bookId;
-                ref.authorId = authorId;
-                db.bookDao().insertBookAuthorsCrossRef(ref);
-
-                List<BookWithAuthors>result = db.bookDao().searchBookWithAuthorsByTitle("サンプル");
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        bookAdapter.updateData(result);
-                    }
-                });
-
+                }
             }
         }).start();
 
@@ -178,7 +139,7 @@ public class SearchResultActivity extends AppCompatActivity {
         TextView SearchResultTitle = findViewById(R.id.tvSearchTitle);
         //キーワードを取得して表示
         String keyword = getIntent().getStringExtra("keyword");
-        SearchResultTitle.setText("検索:"+keyword);
+        SearchResultTitle.setText("検索結果:"+keyword);
 
 
         /*検索欄にタイトルを入れる＋検索ボタンを押した時の処理 →入力したキーワードで本を探す
@@ -192,13 +153,14 @@ public class SearchResultActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //入力されたキーワードの取得
-                final String keyword = searchBox.getText().toString().trim();
+                String keyword = searchBox.getText().toString().trim();
+                String likekeyword = "%"+keyword+"%";
 
                 //スレッドでタイトルにキーワードが含まれる本を検索する
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        List<BookWithAuthors> result = db.bookDao().searchBookWithAuthorsByTitle("%"+keyword +"%");
+                        List<BookWithAuthors> result = db.bookDao().searchBookWithAuthorsByTitle(likekeyword);
 
                         runOnUiThread(new Runnable() {
                             @Override
