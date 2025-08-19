@@ -35,8 +35,8 @@ public class Book {
 
 
     @ColumnInfo(name = "added_date")
-    public  Date added_date ;
+    public Date added_date ;
 
     @ColumnInfo(name ="isFavorite")
-    public Boolean isFavorite ;
+    public boolean isFavorite ;
 }
