@@ -48,7 +48,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         BookWithAuthors bookWithAuthors = bookList.get(position);
         Book book = bookWithAuthors.book;
         holder.textViewBookTitle.setText(book.title);
-        holder.tvDate.setText(book.release_date.toString());
+        //null　クラッシュ回避
+        if (book.release_date != null) {
+            holder.tvDate.setText(book.release_date.toString());
+        }else{
+            holder.tvDate.setText("日付未定");
+        }
 
         //複数の著者をカンマで繋げて表示する処理
 
