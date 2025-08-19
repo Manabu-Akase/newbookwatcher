@@ -10,7 +10,7 @@ import java.util.List;
 public interface AuthorDao {
 
     @Insert
-    void insert(Author author);
+    long insert(Author author);
 
     @Query("SELECT * FROM authors")
     List<Author> getAllAuthors();
