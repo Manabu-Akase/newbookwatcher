@@ -2,6 +2,8 @@ package com.example.newbookwatcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +33,6 @@ public class SearchResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.search_result);
-
         //戻るボタンが押された時の処理
         Button returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +92,7 @@ public class SearchResultActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Book>books=db.bookDao().searchBookByTitle("サンプル本");
+                List<Book>books=db.bookDao().getBookByExactTitle("サンプル本");
                 if (books.isEmpty()) {
 
                 //サンプル用の本を作成、Idを取得
@@ -139,18 +140,19 @@ public class SearchResultActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Book>books=db.bookDao().searchBookByTitle("サンプル本2");
+                //Log.d("MY_LOG", "スレッド2冊目開始");
+                String keyword = "%サンプル%";
+                List<Book>books=db.bookDao().searchBookByTitle(keyword);
                 if (books.isEmpty()) {
 
                     //サンプル用の本を作成、Idを取得
                     Book testBook2 = new Book();
-                    testBook2.title = "サンプル本";
-                    long bookIdLong = db.bookDao().insertBook(testBook2);
-                    int bookId =(int)bookIdLong;
+                    testBook2.title = "サンプル本２";
+                    testBook2.publisherId = 2;
+                    testBook2.release_date = new Date();
+                    testBook2.added_date = new Date();
+                    testBook2.image_url = "https://example.com/sample.jpg";
 
-                /*BookWithAuthorsから取り出すため削除
-                testBook.authorId = 1;
-                 */
                     //著者を登録して authorIdを取得
                     Author author2 = new Author();
                     author2.authorName = "田中花子";
@@ -158,10 +160,9 @@ public class SearchResultActivity extends AppCompatActivity {
                     long authorLong =db.authorDao().insert(author2);
                     int authorId = (int)authorLong;
 
-                    testBook2.publisherId = 2;
-                    testBook2.release_date = new Date();
-                    testBook2.image_url = "https://example.com/sample.jpg";
-                    testBook2.added_date = new Date();
+                    //本を登録
+                    long bookIdLong = db.bookDao().insertBook(testBook2);
+                    int bookId =(int)bookIdLong;
 
                     //BookAuthorsCrossRefに登録
                     BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
@@ -171,6 +172,28 @@ public class SearchResultActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Book> allBooks = db.bookDao().getAllBooks();
+                for (Book b : allBooks){
+                    Log.d("Book_LOG","登録本"+b.title);
+                }
+            }
+        }).start();
+         */
+
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<BookWithAuthors> result = db.bookDao().searchBookWithAuthorsByTitle("%サンプル%");
+                for (BookWithAuthors bookWithAuthors : result) {
+                    Log.d("Check", "ヒットした本のタイトル" + bookWithAuthors.book.title);
+                }
+            }
+        }).start();
+         */
 
         // メニュー画面から検索された本のタイトルをテキストビューで表示する処理
         TextView SearchResultTitle = findViewById(R.id.tvSearchTitle);
