@@ -25,6 +25,9 @@ public interface BookDao {
     List<Book> getFavoriteBooks();
     @Query("UPDATE books SET isFavorite = :isFavorite WHERE bookId = :bookId")
     void updateFavorite(int bookId, boolean isFavorite);
+    //指定されたタイトルと完全に一致する本を検索するクエリ
+    @Query("SELECT * FROM books WHERE title = :title")
+    List<Book> getBookByExactTitle(String title);
     //お気に入りの本を取得するクエリ
     @Transaction
     @Query("SELECT * FROM books WHERE isFavorite = 1 ")
