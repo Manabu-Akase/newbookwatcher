@@ -2,7 +2,6 @@ package com.example.newbookwatcher;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +12,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Insert;
 import androidx.room.Room;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +66,7 @@ public class SearchResultActivity extends AppCompatActivity {
         recyclerView.setAdapter(bookAdapter);
 
 
-        //著者一覧データベースからを取得してauthorMapに保存する処理
+        //著者一覧をデータベースからを取得してauthorMapに保存する処理
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -81,10 +79,8 @@ public class SearchResultActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                     }
                 });
-
             }
         }).start();
 
@@ -162,6 +158,42 @@ public class SearchResultActivity extends AppCompatActivity {
 
                     //本を登録
                     long bookIdLong = db.bookDao().insertBook(testBook2);
+                    int bookId =(int)bookIdLong;
+
+                    //BookAuthorsCrossRefに登録
+                    BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
+                    ref.bookId = bookId;
+                    ref.authorId = authorId;
+                    db.bookDao().insertBookAuthorsCrossRef(ref);
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("MY_LOG", "スレッド3冊目開始");
+                String keyword = "%サンプル%";
+                List<Book>books=db.bookDao().getBookByExactTitle("サンプル本3");
+                if (books.isEmpty()) {
+
+                    //サンプル用の本を作成、Idを取得
+                    Book testBook3 = new Book();
+                    testBook3.title = "サンプル本3";
+                    testBook3.publisherId = 3;
+                    testBook3.release_date = new Date();
+                    testBook3.added_date = new Date();
+                    testBook3.image_url = "https://example.com/sample.jpg";
+
+                    //著者を登録して authorIdを取得
+                    Author author3 = new Author();
+                    author3.authorName = "佐藤次郎";
+                    author3.authorKana = "サトウジロウ";
+                    long authorLong =db.authorDao().insert(author3);
+                    int authorId = (int)authorLong;
+
+                    //本を登録
+                    long bookIdLong = db.bookDao().insertBook(testBook3);
                     int bookId =(int)bookIdLong;
 
                     //BookAuthorsCrossRefに登録
