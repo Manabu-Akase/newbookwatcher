@@ -263,4 +263,27 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
     }
+
+    //他の画面から戻ってきたときに再読み込みする処理→画面に戻った際に再検索
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        String keyword= getIntent().getStringExtra("keyword");
+        String likekeyword = "%"+ keyword + "%";
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<BookWithAuthors>result = db.bookDao().searchBookWithAuthorsByTitle(likekeyword);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        bookAdapter.updateData(result);
+                    }
+                });
+            }
+        }).start();
+    }
 }
