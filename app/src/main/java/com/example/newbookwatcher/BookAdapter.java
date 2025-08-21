@@ -85,22 +85,21 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                 holder.favoriteButton.setImageResource(
                         book.isFavorite ? android.R.drawable.star_on: android.R.drawable.star_off
                 );
+
+                //データベースへ保存する処理　
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //データベースを設定→保存
+                        AppDatabase db = Room.databaseBuilder(
+                                context.getApplicationContext(), AppDatabase.class, "book-database"
+                        ).build();
+
+                        db.bookDao().updateFavorite(book.bookId, book.isFavorite);
+                    }
+                }).start();
             }
         });
-
-        //データベースへ保存する処理　
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //データベースを設定→保存
-                AppDatabase db = Room.databaseBuilder(
-                        context.getApplicationContext(), AppDatabase.class, "book-database"
-                ).build();
-
-                db.bookDao().updateFavorite(book.bookId, book.isFavorite);
-            }
-        }).start();
-
     }
     @Override
     public int getItemCount(){
