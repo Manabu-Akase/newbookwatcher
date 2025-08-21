@@ -64,7 +64,12 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
 
         //書籍情報の表示
         holder.tvBookTitle.setText(book.title);
-        holder.tvDate.setText(book.release_date.toString());
+
+        if(book.release_date != null) {
+            holder.tvDate.setText(book.release_date.toString());
+        }else{
+            holder.tvDate.setText("日付未定");
+        }
 
         //複数著者をカンマ繋げで表示する処理
 
