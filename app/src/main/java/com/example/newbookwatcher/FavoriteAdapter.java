@@ -24,13 +24,14 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
     private Context context;
     private Map<Integer,String>authorMap;
     private AppDatabase db;
+    private OnFavoriteChangeListener favoriteChangeListener ;
 
-public FavoriteAdapter(List<BookWithAuthors> FavoriteBookList,Context context,Map<Integer,String> authorMap){
+public FavoriteAdapter(List<BookWithAuthors> FavoriteBookList,Context context,Map<Integer,String> authorMap,OnFavoriteChangeListener favoriteChangeListener){
     this.FavoriteBookList = FavoriteBookList;
     this.context = context ;
     this.authorMap = authorMap ;
     this.db = Room.databaseBuilder(context.getApplicationContext(),AppDatabase.class,"book-database").build();
-
+    this.favoriteChangeListener = favoriteChangeListener;
 }
 
 //ViewHolderクラスを作成
@@ -50,6 +51,10 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
 
     }
 }
+    //コールバックのインターフェース追加
+    public interface OnFavoriteChangeListener{
+        void onFavoriteChanged();
+    }
 
 @Override
     public FavoriteAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
@@ -111,10 +116,13 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
                                         }
                                     }).start();
 
+                                    if (favoriteChangeListener != null){
+                                        favoriteChangeListener.onFavoriteChanged();
+                                    }
+
                                     //リストから削除する処理
                                     int removePosition = holder.getAdapterPosition();
                                     notifyItemRemoved(removePosition);
-
                                 }
 
                                 //ダイアログの中で「いいえ」を押すと何もせず本の画面に戻る処理

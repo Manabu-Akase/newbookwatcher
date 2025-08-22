@@ -36,7 +36,13 @@ public class FavoriteActivity extends AppCompatActivity {
     //リサイクラービューの設定→アダプターの作成と処理、縦に並べる
     RecyclerView recyclerView = findViewById(R.id.favoriteBookList);
 
-    favoriteAdapter = new FavoriteAdapter(new ArrayList<BookWithAuthors>(),FavoriteActivity.this ,authorMap);
+    favoriteAdapter = new FavoriteAdapter(new ArrayList<BookWithAuthors>(), FavoriteActivity.this, authorMap, new FavoriteAdapter.OnFavoriteChangeListener() {
+        //コールバックを追加、お気に入り状態を再読み込みして表示。
+        @Override
+        public void onFavoriteChanged() {
+            loadFavorites();
+        }
+    });
         recyclerView.setAdapter(favoriteAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(FavoriteActivity.this));
 
