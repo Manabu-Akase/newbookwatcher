@@ -22,14 +22,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
 
     private List<BookWithAuthors> FavoriteBookList;
     private Context context;
-    private Map<Integer,String>authorMap;
     private AppDatabase db;
     private OnFavoriteChangeListener favoriteChangeListener ;
 
-public FavoriteAdapter(List<BookWithAuthors> FavoriteBookList,Context context,Map<Integer,String> authorMap,OnFavoriteChangeListener favoriteChangeListener){
+public FavoriteAdapter(List<BookWithAuthors> FavoriteBookList,Context context,OnFavoriteChangeListener favoriteChangeListener){
     this.FavoriteBookList = FavoriteBookList;
     this.context = context ;
-    this.authorMap = authorMap ;
     this.db = Room.databaseBuilder(context.getApplicationContext(),AppDatabase.class,"book-database").build();
     this.favoriteChangeListener = favoriteChangeListener;
 }

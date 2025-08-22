@@ -18,7 +18,6 @@ import java.util.Map;
 public class FavoriteActivity extends AppCompatActivity {
 
     private FavoriteAdapter favoriteAdapter;
-    private Map<Integer,String>authorMap = new HashMap<>();
     private AppDatabase db;
 
     @Override
@@ -36,7 +35,7 @@ public class FavoriteActivity extends AppCompatActivity {
     //リサイクラービューの設定→アダプターの作成と処理、縦に並べる
     RecyclerView recyclerView = findViewById(R.id.favoriteBookList);
 
-    favoriteAdapter = new FavoriteAdapter(new ArrayList<BookWithAuthors>(), FavoriteActivity.this, authorMap, new FavoriteAdapter.OnFavoriteChangeListener() {
+    favoriteAdapter = new FavoriteAdapter(new ArrayList<BookWithAuthors>(), FavoriteActivity.this, new FavoriteAdapter.OnFavoriteChangeListener() {
         //コールバックを追加、お気に入り状態を再読み込みして表示。
         @Override
         public void onFavoriteChanged() {
@@ -76,11 +75,6 @@ public class FavoriteActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                //著者情報をデータベースから全部取り出す　→　マップ著者idと名前（＋カナ）を入れる
-                List<Author> authors = db.authorDao().getAllAuthors();
-                for (Author author : authors){
-                    authorMap.put(author.authorId, author.authorName+"("+author.authorKana+")");
-                }
 
                 //お気に入りされた本をデータベースから取り出す
                 List<BookWithAuthors> favorites = db.bookDao().getFavoriteBooksWithAuthors();

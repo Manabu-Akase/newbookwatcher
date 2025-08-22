@@ -19,15 +19,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     private List <BookWithAuthors> bookList;
     private Context context ;
-    private Map<Integer,String>authorMap;
     private AppDatabase db ;
 
 
     //BookAdapterを作る時に使うコンストラクタ
-    public BookAdapter(List<BookWithAuthors> bookList,Context context,Map<Integer,String>authorMap,AppDatabase db){
+    public BookAdapter(List<BookWithAuthors> bookList,Context context,AppDatabase db){
         this.bookList = bookList ;
         this.context = context ;
-        this.authorMap = authorMap ;
         this.db = db ;
     }
     public void updateData(List<BookWithAuthors>newBookList) {

@@ -18,11 +18,8 @@ import java.util.Date;
 import java.util.Map;
 
 public class SearchResultActivity extends AppCompatActivity {
-
     private BookAdapter bookAdapter;
-    private Map<Integer,String> authorMap = new HashMap<>();
     private AppDatabase db;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +56,7 @@ public class SearchResultActivity extends AppCompatActivity {
         //リサイクラービューの処理
         RecyclerView recyclerView = findViewById (R.id.recyclerViewResults);
 
-        bookAdapter = new BookAdapter(new ArrayList<>(),this ,authorMap,db);
+        bookAdapter = new BookAdapter(new ArrayList<>(),this,db);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bookAdapter);
 
@@ -68,11 +65,6 @@ public class SearchResultActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Author> authors = db.authorDao().getAllAuthors();
-                for (Author author: authors){
-                    authorMap.put(author.authorId,author.authorName+"("+ author.authorKana+")");
-                }
-
                 //画面を止めないため、UI更新をメインスレッドで
                 runOnUiThread(new Runnable() {
                     @Override
