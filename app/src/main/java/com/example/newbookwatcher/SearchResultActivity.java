@@ -127,6 +127,26 @@ public class SearchResultActivity extends AppCompatActivity {
                 });
                  */
                 }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String keyword = getIntent().getStringExtra("keyword");
+                        String likekeyword = "%"+ keyword + "%";
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<BookWithAuthors>result = db.bookDao().searchBookWithAuthorsByTitle(likekeyword);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        bookAdapter.updateData(result);
+                                    }
+                                });
+                            }
+                        }).start();
+                    }
+                });
             }
         }).start();
 
