@@ -203,6 +203,42 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         }).start();
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("MY_LOG", "スレッド4冊目開始");
+                String keyword = "%サンプル%";
+                List<Book>books=db.bookDao().getBookByExactTitle("サンプル本4");
+                if (books.isEmpty()) {
+
+                    //サンプル用の本を作成、Idを取得
+                    Book testBook4 = new Book();
+                    testBook4.title = "サンプル本4";
+                    testBook4.publisherId = 4;
+                    testBook4.release_date = new Date();
+                    testBook4.added_date = new Date();
+                    testBook4.image_url = "https://example.com/sample.jpg";
+
+                    //著者を登録して authorIdを取得
+                    Author author4 = new Author();
+                    author4.authorName = "鈴木大";
+                    author4.authorKana = "スズキマサル";
+                    long authorLong =db.authorDao().insert(author4);
+                    int authorId = (int)authorLong;
+
+                    //本を登録
+                    long bookIdLong = db.bookDao().insertBook(testBook4);
+                    int bookId =(int)bookIdLong;
+
+                    //BookAuthorsCrossRefに登録
+                    BookAuthorsCrossRef ref = new BookAuthorsCrossRef();
+                    ref.bookId = bookId;
+                    ref.authorId = authorId;
+                    db.bookDao().insertBookAuthorsCrossRef(ref);
+                }
+            }
+        }).start();
+
         /*new Thread(new Runnable() {
             @Override
             public void run() {
