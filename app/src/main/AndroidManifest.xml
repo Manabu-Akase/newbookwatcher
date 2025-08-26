@@ -28,5 +28,6 @@
         <activity android:name=".NotificationSettingActivity"/>
 
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
