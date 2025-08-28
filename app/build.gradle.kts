@@ -53,6 +53,10 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(platform("androidx.compose:compose-bom:2025.07.00"))
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation("com.google.code.gson:gson:2.11.0")
+
 
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
