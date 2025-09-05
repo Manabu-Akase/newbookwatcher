@@ -60,20 +60,6 @@ public class SearchResultActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bookAdapter);
 
-
-        //著者一覧をデータベースからを取得してauthorMapに保存する処理
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //画面を止めないため、UI更新をメインスレッドで
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                });
-            }
-        }).start();
-
         //テスト用の本のデータをデータベースに登録する
         new Thread(new Runnable() {
             @Override
