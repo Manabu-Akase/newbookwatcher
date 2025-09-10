@@ -56,9 +56,9 @@ public class SearchResultActivity extends AppCompatActivity {
 
         //リサイクラービューの処理
         RecyclerView recyclerView = findViewById (R.id.recyclerViewResults);
-        bookAdapter = new BookAdapter(new ArrayList<>(),this,db);
+        rakutenBookAdapter = new RakutenBookAdapter(new ArrayList<>(),this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(bookAdapter);
+        recyclerView.setAdapter(rakutenBookAdapter);
 
         //テスト用の本のデータをデータベースに登録する
         new Thread(new Runnable() {
