@@ -12,14 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
-import java.util.Map;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 public class SearchResultActivity extends AppCompatActivity {
     private BookAdapter bookAdapter;
     private AppDatabase db;
+    private RakutenBookAdapter rakutenBookAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,6 @@ public class SearchResultActivity extends AppCompatActivity {
 
         //リサイクラービューの処理
         RecyclerView recyclerView = findViewById (R.id.recyclerViewResults);
-
         bookAdapter = new BookAdapter(new ArrayList<>(),this,db);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(bookAdapter);
@@ -279,6 +279,29 @@ public class SearchResultActivity extends AppCompatActivity {
                 //入力されたキーワードの取得
                 String keyword = searchBox.getText().toString().trim();
                 String likekeyword = "%"+keyword+"%";
+                //楽天API紐づけ
+                String appId = "1033766590408149408";
+
+                RakutenBooksApi api = RakutenApiClient.getApiService();
+                Call<RakutenBookResponse>call = api.searchBooks(appId,keyword);
+
+                call.enqueue(new Callback<RakutenBookResponse>() {
+                    @Override
+                    public void onResponse(Call<RakutenBookResponse> call, Response<RakutenBookResponse> response) {
+                        if (response.isSuccessful()){
+                            List<RakutenBookWrapper>items = response.body().Item;
+                            for (RakutenBookWrapper wrapper : items){
+                                RakutenItem item = wrapper.item;
+                                Log.d("API","タイトル"+ item.title);
+                            }
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<RakutenBookResponse> call, Throwable t) {
+                        Log.e("API","エラー");
+
+                    }
+                });
 
                 //スレッドでタイトルにキーワードが含まれる本を検索する
                 new Thread(new Runnable() {
