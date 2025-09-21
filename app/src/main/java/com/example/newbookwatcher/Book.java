@@ -39,4 +39,6 @@ public class Book {
 
     @ColumnInfo(name ="isFavorite")
     public boolean isFavorite ;
+    @ColumnInfo(name= "isbn")
+    public String isbn ;
 }
