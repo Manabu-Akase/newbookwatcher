@@ -1,9 +1,11 @@
 package com.example.newbookwatcher;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +33,7 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder,int position){
+        Log.d("!!!!!","NULL");
         RakutenItem item = itemList.get(position);
         holder.title.setText(item.title);
         holder.author.setText(item.author);
@@ -42,13 +45,15 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
         return itemList.size();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, author, date, publisher ;
+        TextView title, author, date;
+        ImageButton favoriteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.tvBookTitle);
             author = itemView.findViewById(R.id.tvAuthor);
             date = itemView.findViewById(R.id.tvDate);
+            favoriteButton = itemView.findViewById(R.id.favoriteButton);
         }
     }
 }
