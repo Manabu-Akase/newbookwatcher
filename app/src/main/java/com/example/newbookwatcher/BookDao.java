@@ -36,4 +36,8 @@ public interface BookDao {
     @Transaction
     @Query("SELECT * FROM books WHERE title LIKE '%'||:keyword|| '%'")
     List<BookWithAuthors>searchBookWithAuthorsByTitle(String keyword);
+
+    @Query("SELECT * FROM books WHERE isbn = :isbn LIMIT 1 ")
+    Book findBookByIsbn(String isbn);
+
 }
