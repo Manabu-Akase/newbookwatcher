@@ -62,6 +62,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
     }
     @Override
     public void onBindViewHolder(@NonNull FavoriteAdapter.ViewHolder holder , int position){
+        Log.d("!!!!!","NULL");
         BookWithAuthors bookWithAuthors = FavoriteBookList.get(position);
         Book book = bookWithAuthors.book;
 
