@@ -16,9 +16,12 @@ import java.util.List;
 public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.ViewHolder> {
     private List<RakutenItem>itemList;
     private Context context ;
-    public RakutenBookAdapter(List<RakutenItem>itemList,Context context){
+    private AppDatabase db;
+
+    public RakutenBookAdapter(List<RakutenItem>itemList,Context context,AppDatabase database){
         this.itemList = itemList;
         this.context = context;
+        this.db = db;
     }
     public void updateData(List<RakutenItem> newList){
         itemList.clear();
@@ -38,6 +41,58 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
         holder.title.setText(item.title);
         holder.author.setText(item.author);
         holder.date.setText(item.salesDate);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //DBからお気に入り状態を取得して反映する
+                Book book = db.bookDao().findBookByIsbn(item.isbn);
+                boolean isFavorite = (book != null && book.isFavorite);
+
+                holder.itemView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.favoriteButton.setImageResource(
+                                isFavorite ? android.R.drawable.star_on : android.R.drawable.star_off
+                        );
+                    }
+                });
+            }
+        }).start();
+
+        holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Book book = db.bookDao().findBookByIsbn(item.isbn);
+                        final boolean newStatus;
+
+                        if(book == null){
+                            Book newBook = new Book();
+                            newBook.title = item.title;
+                            newBook.isbn = item.isbn;
+                            newBook.isFavorite = true ;
+                            db.bookDao().insertBook(newBook);
+                            newStatus = true ;
+                        } else {
+                            newStatus = !book.isFavorite;
+                            db.bookDao().updateFavorite(book.bookId, newStatus);
+                        }
+
+                        holder.itemView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                holder.favoriteButton.setImageResource(
+                                        newStatus ? android.R.drawable.star_on : android.R.drawable.star_off
+                                );
+                            }
+                        });
+                    }
+                }).start();
+            }
+        });
     }
 
     @Override
