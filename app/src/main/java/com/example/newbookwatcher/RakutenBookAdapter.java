@@ -1,13 +1,14 @@
 package com.example.newbookwatcher;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,7 +40,6 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder,int position){
-        Log.d("!!!!!","NULL");
         RakutenItem item = itemList.get(position);
         holder.title.setText(item.title);
         holder.author.setText(item.author);
@@ -47,7 +47,7 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
 
         //Glideで画像を読み込む処理
         //largeImageUrlがないときはsmallImageUrlを使う,どちらもない時は❌を表示
-        String imageUrl = (item.largeImageUrl != null && item.largeImageUrl.isEmpty())
+        String imageUrl = (item.largeImageUrl != null && !item.largeImageUrl.isEmpty())
                 ? item.largeImageUrl
                 : item.smallImageUrl;
 
@@ -83,25 +83,64 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
                     public void run() {
                         Book book = db.bookDao().findBookByIsbn(item.isbn);
                         final boolean newStatus;
+                        Book targetBook ;
 
                         if(book == null){
                             Book newBook = new Book();
                             newBook.title = item.title;
                             newBook.isbn = item.isbn;
+                            newBook.image_url = item.largeImageUrl != null && !item.largeImageUrl.isEmpty()
+                                    ? item.largeImageUrl : item.smallImageUrl;
+                            //発売日を保存
+                            long rel = ReminderScheduler.parseRakutenSalesDateToMillis(item.salesDate);
+                            if(rel > 0) newBook.release_date = new java.util.Date(rel);
                             newBook.isFavorite = true ;
                             db.bookDao().insertBook(newBook);
                             newStatus = true ;
+                            targetBook = newBook ;
+
+                            SharedPreferences sharedPreferences = context.getSharedPreferences("NotificationSettings",Context.MODE_PRIVATE);
+                            int daysBefore = sharedPreferences.getInt("daysBefore",1);
+
+                            if (newBook.release_date != null ){
+                                long notifyTime = newBook.release_date.getTime() - daysBefore * 24L * 60L * 60L * 1000L ;
+                                if(notifyTime > System.currentTimeMillis()){
+                                    ReminderScheduler.scheduleReminder(context.getApplicationContext() , newBook , notifyTime);
+                                }
+                            }
                         } else {
                             newStatus = !book.isFavorite;
                             db.bookDao().updateFavorite(book.bookId, newStatus);
+                            targetBook = book ;
+                            //お気に入り登録　→ スケジュール登録、お気に入り解除　→ スケジュール解除
+                            if (newStatus){
+                                SharedPreferences sharedPreferences = context.getSharedPreferences("NotificationSettings",Context.MODE_PRIVATE);
+                                int daysBefore = sharedPreferences.getInt("daysBefore", 1 );
+
+                                if (book.release_date != null){
+                                    long notifyTime = book.release_date.getTime() - daysBefore * 24L * 60L * 60L * 1000L ;
+                                    if (notifyTime > System.currentTimeMillis()){
+                                        ReminderScheduler.scheduleReminder(context.getApplicationContext(), book , notifyTime);
+                                    }
+                                }
+                            }else{
+                                ReminderScheduler.cancelBookReminder(context.getApplicationContext() , book.isbn);
+                            }
                         }
 
+                        Book finalTargetBook = targetBook ;
                         holder.itemView.post(new Runnable() {
                             @Override
                             public void run() {
                                 holder.favoriteButton.setImageResource(
                                         newStatus ? android.R.drawable.star_on : android.R.drawable.star_off
                                 );
+                                if (newStatus){
+                                    Toast.makeText(context,"お気に入りに追加されました！",Toast.LENGTH_SHORT).show();
+                                    ReminderScheduler.scheduleTestReminder(context,finalTargetBook);
+                                }else{
+                                    Toast.makeText(context, "お気に入りから解除されました！",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                     }
