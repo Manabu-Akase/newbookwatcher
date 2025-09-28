@@ -6,10 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
     public RakutenBookAdapter(List<RakutenItem>itemList,Context context,AppDatabase database){
         this.itemList = itemList;
         this.context = context;
-        this.db = db;
+        this.db = database;
     }
     public void updateData(List<RakutenItem> newList){
         itemList.clear();
@@ -41,6 +44,18 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
         holder.title.setText(item.title);
         holder.author.setText(item.author);
         holder.date.setText(item.salesDate);
+
+        //Glideで画像を読み込む処理
+        //largeImageUrlがないときはsmallImageUrlを使う,どちらもない時は❌を表示
+        String imageUrl = (item.largeImageUrl != null && item.largeImageUrl.isEmpty())
+                ? item.largeImageUrl
+                : item.smallImageUrl;
+
+        Glide.with(context)
+                .load(imageUrl) //楽天APIから取得
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_delete)
+                .into(holder.imageView);
 
         new Thread(new Runnable() {
             @Override
@@ -102,6 +117,7 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, author, date;
         ImageButton favoriteButton;
+        ImageView imageView ;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,6 +125,7 @@ public class RakutenBookAdapter extends RecyclerView.Adapter<RakutenBookAdapter.
             author = itemView.findViewById(R.id.tvAuthor);
             date = itemView.findViewById(R.id.tvDate);
             favoriteButton = itemView.findViewById(R.id.favoriteButton);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 }
