@@ -88,55 +88,49 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
         holder.tvAuthor.setText(sb.toString());
 
         //お気に入りアイコンの初期状態
-        holder.favoriteButton.setImageResource(android.R.drawable.star_on);
+        holder.favoriteButton.setImageResource(
+                book.isFavorite ? android.R.drawable.star_on : android.R.drawable.star_off);
 
         //アイコンが押されたらお気に入り解除、リストからも削除する処理
         holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(book.isFavorite){
-                    //お気に入りリストからなくなることをダイアログで忠告
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                            .setCancelable(false)
-                            .setTitle("お気に入り解除の確認")
-                            .setMessage("『"+book.title+"』"+"をお気に入りを解除すると、このリストから削除されます。よろしいですか。")
-                            .setPositiveButton("はい", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    book.isFavorite = false;
+               boolean newStatus = !book.isFavorite;
+               book.isFavorite = newStatus;
 
-                                    //データベースを更新する
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            db.bookDao().updateFavorite(book.bookId, false);
+               holder.favoriteButton.setImageResource(
+                       book.isFavorite ? android.R.drawable.star_on : android.R.drawable.star_off
+               );
 
-                                        }
-                                    }).start();
+               //データベースを更新する処理
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        db.bookDao().updateFavorite(book.bookId, book.isFavorite);
 
-                                    if (favoriteChangeListener != null){
-                                        favoriteChangeListener.onFavoriteChanged();
+                        if(!newStatus) {
+                            //お気に入り解除したらリストから削除する
+                            int position = holder.getAdapterPosition();
+                            if (position != RecyclerView.NO_POSITION) {
+                                FavoriteBookList.remove(position);
+                                ((FavoriteActivity) context).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        notifyItemRemoved(position);
+                                        notifyItemRangeChanged(position,FavoriteBookList.size());
                                     }
+                                });
+                            }
+                        }
 
-                                    //リストから削除する処理
-                                    int removePosition = holder.getAdapterPosition();
-                                    notifyItemRemoved(removePosition);
-                                }
-
-                                //ダイアログの中で「いいえ」を押すと何もせず本の画面に戻る処理
-                            }).setNegativeButton("いいえ", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });builder.show();
-                }
-
+                        if (favoriteChangeListener != null){
+                            favoriteChangeListener.onFavoriteChanged();
+                        }
+                    }
+                }).start();
             }
-
         });
-
     }
 
     @Override
