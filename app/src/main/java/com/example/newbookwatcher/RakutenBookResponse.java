@@ -6,5 +6,5 @@ import java.util.List;
 
 public class RakutenBookResponse {
     @SerializedName("Items")
-    public List<RakutenBookWrapper>Item;
+    public List<RakutenBookWrapper>Items;
 }
