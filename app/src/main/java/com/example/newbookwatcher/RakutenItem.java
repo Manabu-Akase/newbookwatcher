@@ -10,8 +10,10 @@ public class RakutenItem {
     public String publisherName;
     @SerializedName("salesDate")
     public String salesDate ;
-    @SerializedName("ImageUrl")
-    public String ImageUrl;
     @SerializedName("isbn")
     public String isbn;
+    @SerializedName("largeImageUrl")
+    public String largeImageUrl;
+    @SerializedName("smallImageUrl")
+    public String smallImageUrl;
 }
