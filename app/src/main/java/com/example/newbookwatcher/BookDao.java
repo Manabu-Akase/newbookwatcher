@@ -39,5 +39,7 @@ public interface BookDao {
 
     @Query("SELECT * FROM books WHERE isbn = :isbn LIMIT 1 ")
     Book findBookByIsbn(String isbn);
+    @Query("SELECT * FROM books WHERE isFavorite = 1 and release_date IS NOT NULL" )
+    List<Book> getFavoriteBookWithReleaseDate();
 
 }
