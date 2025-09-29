@@ -9,9 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +89,16 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
                 sb.append(",");
             }
         }
+        //Glideで取得した本の画像を表示する処理
+        if (book.image_url != null && !book.image_url.isEmpty()){
+            Glide.with(context)
+                    .load(book.image_url)
+                    .placeholder(android.R.drawable.ic_menu_gallery)    //読み込み中の画像
+                    .error(android.R.drawable.ic_delete)         //エラー時の画像
+                    .into(holder.imageView);
+        }else{
+            holder.imageView.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
 
         holder.tvAuthor.setText(sb.toString());
 
@@ -99,40 +114,46 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
                boolean newStatus = !book.isFavorite;
                book.isFavorite = newStatus;
 
-               holder.favoriteButton.setImageResource(
-                       book.isFavorite ? android.R.drawable.star_on : android.R.drawable.star_off
-               );
+               new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                       // DB更新をバックグラウンドで実行
+                       db.bookDao().updateFavorite(book.bookId, book.isFavorite);
+                       // UI操作はUIスレッドで実行
+                       ((FavoriteActivity) context).runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               if (newStatus) {
+                                   // お気に入り追加
+                                   ReminderScheduler.scheduleReminder(context, book, null);
+                                   ReminderScheduler.scheduleTestReminder(context, book);
+                                   Toast.makeText(context, "お気に入りに追加されました", Toast.LENGTH_SHORT).show();
+                                   holder.favoriteButton.setImageResource(android.R.drawable.star_on);
+                               } else {
+                                   // お気に入り解除
+                                   ReminderScheduler.cancelBookReminder(context, book.isbn);
+                                   Toast.makeText(context, "お気に入りから削除されました！", Toast.LENGTH_SHORT).show();
+                                   holder.favoriteButton.setImageResource(android.R.drawable.star_off);
 
-               //データベースを更新する処理
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        db.bookDao().updateFavorite(book.bookId, book.isFavorite);
+                                   // リストから削除
+                                   int position = holder.getAdapterPosition();
+                                   if (position != RecyclerView.NO_POSITION) {
+                                       FavoriteBookList.remove(position);
+                                       notifyItemRemoved(position);
+                                       notifyItemRangeChanged(position, FavoriteBookList.size());
+                                   }
+                               }
 
-                        if(!newStatus) {
-                            //お気に入り解除したらリストから削除する
-                            int position = holder.getAdapterPosition();
-                            if (position != RecyclerView.NO_POSITION) {
-                                FavoriteBookList.remove(position);
-                                ((FavoriteActivity) context).runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        notifyItemRemoved(position);
-                                        notifyItemRangeChanged(position,FavoriteBookList.size());
-                                    }
-                                });
-                            }
-                        }
-
-                        if (favoriteChangeListener != null){
-                            favoriteChangeListener.onFavoriteChanged();
-                        }
-                    }
-                }).start();
+                               if (favoriteChangeListener != null) {
+                                            favoriteChangeListener.onFavoriteChanged();
+                               }
+                           }
+                       });
+                   }
+               }).start();
             }
         });
     }
-
     @Override
     public int getItemCount(){
         return FavoriteBookList.size();
