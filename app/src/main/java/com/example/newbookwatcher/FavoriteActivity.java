@@ -30,7 +30,7 @@ public class FavoriteActivity extends AppCompatActivity {
     db = Room.databaseBuilder(
     getApplicationContext(),
     AppDatabase.class,
-            "book-database").build();
+            "book-database").fallbackToDestructiveMigration().build();
 
     //リサイクラービューの設定→アダプターの作成と処理、縦に並べる
     RecyclerView recyclerView = findViewById(R.id.favoriteBookList);
@@ -87,5 +87,11 @@ public class FavoriteActivity extends AppCompatActivity {
                 });
             }
         }).start();
+    }
+    //他の画面から戻った際に最新のお気に入り状態に更新
+    @Override
+    protected void onResume(){
+        super.onResume();
+        loadFavorites();
     }
 }
